@@ -1,8 +1,9 @@
-import TopNavbar from "@/app/components/TopNavbar";
-
+'use client'
+import {} from "crypto-js"
 export default function Home() {
-    return (<div className={"h-max"}>
 
+    return (<div className={"h-max"}>
+            Test
         </div>
     )
 }
