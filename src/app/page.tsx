@@ -1,9 +1,8 @@
 'use client'
 import {} from "crypto-js"
-export default function Home() {
+export default function Main() {
 
     return (<div className={"h-max"}>
-            Test
         </div>
     )
 }
