@@ -1,8 +1,10 @@
 'use client'
 import {} from "crypto-js"
-export default function Main() {
+import {ReactNode} from "react";
+export default function Main({children}: { children: ReactNode }) {
 
-    return (<div className={"h-max"}>
+    return (<div className={"h-max light"}>
+            {children}
         </div>
     )
 }

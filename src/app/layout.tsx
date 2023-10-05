@@ -19,7 +19,7 @@ export default function RootLayout({children}: PropsWithChildren<{}>) {
         <MainProviders>
             <div className={"h-screen flex flex-col"}>
                 <TopNavbar/>
-                <main className={"flex-1"}>
+                <main className={"flex-1 flex"}>
                     {children}
                 </main>
                 <footer>

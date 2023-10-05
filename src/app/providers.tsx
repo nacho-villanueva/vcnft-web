@@ -2,11 +2,14 @@
 
 import {PropsWithChildren} from "react";
 import {NextUIProvider} from "@nextui-org/react";
+import {DIDContextProvider} from "@/hooks/UseDID";
 
 const MainProviders = ({children}: PropsWithChildren<{}>) => {
     return (
         <NextUIProvider>
-            {children}
+            <DIDContextProvider>
+                {children}
+            </DIDContextProvider>
         </NextUIProvider>
     )
 }
