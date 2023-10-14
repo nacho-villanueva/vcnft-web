@@ -2,10 +2,51 @@
 import {Card, CardHeader, CardBody, CardFooter, Divider, Button} from "@nextui-org/react";
 import {vcnftApi} from "@/utils/Axios";
 import {useDID} from "@/hooks/UseDID";
+import {ethers, JsonRpcSigner} from "ethers";
+import {useEffect, useState} from "react";
+const provider = new ethers.BrowserProvider(window.ethereum)
 
 export default function WalletPage() {
 
     const {dids, addDID} = useDID()
+
+    const query = new URLSearchParams(window.location.search);
+
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [defaultAccount, setDefaultAccount] = useState<string | null>(null);
+    const [userBalance, setUserBalance] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (query.has("challenge")) {
+            if (window.ethereum) {
+                provider.getSigner().then(async (signer) => {
+                    signer.signMessage(query.get("challenge") as string).then((signature) => {
+                        vcnftApi.post("/holder/challenge", {
+                            challenge: {
+                                message: query.get("challenge") as string,
+                                signature: signature
+                            }
+                        })
+                    })
+                })
+            }
+        }
+    })
+
+    const connectWalletHandler = () => {
+        if (window.ethereum) {
+            provider.send("eth_requestAccounts", []).then(async () => {
+                await accountChangedHandler(await provider.getSigner());
+            })
+        } else {
+            console.log("Please Install Metamask!!!")
+            setErrorMessage("Please Install Metamask!!!");
+        }
+    }
+    const accountChangedHandler = async (newAccount: JsonRpcSigner) => {
+        const address = await newAccount.getAddress();
+        setDefaultAccount(address);
+    }
 
     const createIdentity = () => {
         vcnftApi.get('/identity/create').then(
@@ -34,6 +75,11 @@ export default function WalletPage() {
                         Import an existing identity
                     </h2>
                     <Button variant={"bordered"}> Import </Button>
+                    <Divider className={"my-4"}/>
+                    <h2 className="text-sm">
+                        Add Blockchain Wallet
+                    </h2>
+                    <Button variant={"bordered"} onClick={connectWalletHandler}> Connect Wallet </Button>
                 </CardBody>
                 <Divider />
                 <CardFooter className="flex flex-col">
